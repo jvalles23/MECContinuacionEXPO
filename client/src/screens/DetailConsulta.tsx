@@ -7,16 +7,31 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
+  Modal
 } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../components/Button';
 import { styles } from '../theme/appTheme';
+import { mapStyle } from '../theme/mapStyle';
+import { MARKERS_DATA } from '../components/MarkersData';
+import { Image } from 'react-native';
 
 interface Props extends DrawerScreenProps<any, any> { }
 
 const DetailConsulta = ({ navigation, route }: Props) => {
+  const [selectedMarker, setSelectedMarker] = useState(null);
+
+  const handleMarkerPress = (marker) => {
+    console.log('Marker pressed:', marker);
+    setSelectedMarker(marker);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedMarker(null);
+  };
+
   const { nombre, apellido, tarjetaSanitaria, fechaCita, motivoConsulta } = route.params;
   const { paciente } = route.params;
 
@@ -114,7 +129,7 @@ const DetailConsulta = ({ navigation, route }: Props) => {
               <Icon name='warning-outline' size={60} color='red' />
               <Text style={stylesIntern.alertText}>
                 El médico no está disponible en este centro de salud.
-                Consulte los marcadores del mapa para saber a que centro de salud acudir.
+                Consulte los marcadores del mapa para saber a qué centro de salud acudir.
               </Text>
             </View>
             <TouchableOpacity
@@ -132,13 +147,46 @@ const DetailConsulta = ({ navigation, route }: Props) => {
             provider={PROVIDER_GOOGLE}
             style={stylesIntern.mapStyle}
             initialRegion={{
-              latitude: 41.64554,
-              longitude: -0.90389,
+              latitude: 41.64911,
+              longitude: -0.888503,
               latitudeDelta: 0.003,
               longitudeDelta: 0.003,
             }}
             mapType="standard"
-          />
+          >
+            {MARKERS_DATA.map((marker) => (
+              <Marker
+                key={marker.id}
+                coordinate={{
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                }}
+                onPress={() => handleMarkerPress(marker)}
+              ></Marker>
+            ))}
+          </MapView>
+
+          {/* Modal para mostrar información del marcador */}
+          <Modal
+            visible={selectedMarker !== null}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={handleCloseModal}
+          >
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+              <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+                <Image
+                  source={selectedMarker?.imageRequire}
+                  style={{ width: 350, height: 300, borderRadius: 5, marginTop: 10 }}
+                />
+                <Text>Nombre: {selectedMarker?.name}</Text>
+                <Text>Dirección: {selectedMarker?.direction}</Text>
+                <TouchableOpacity onPress={handleCloseModal}>
+                  <Text style={{ color: 'blue', marginTop: 10 }}>Cerrar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </View>
         <View style={{ height: 100 }} />
       </View>
@@ -214,7 +262,6 @@ const stylesIntern = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   }
-
 });
 
 export default DetailConsulta;

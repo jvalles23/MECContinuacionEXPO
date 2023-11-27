@@ -26,6 +26,7 @@
     "react-native-elements": "^3.4.3",
     "react-native-maps": "1.7.1",
     "react-native-onboarding-swiper": "^1.2.0",
+    "react-native-reanimated": "^3.5.4",
     "react-native-table-component": "^1.2.2",
     "react-native-web": "~0.19.6"
   },
