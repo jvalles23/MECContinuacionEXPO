@@ -1,11 +1,11 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql2 = require('mysql2');
 const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
 
-const db = mysql.createConnection({
+const db = mysql2.createConnection({
     host: 'localhost',
     user: 'root',
     password: 'root',
@@ -61,24 +61,36 @@ app.get('/infoConsulta', (req, res) => {
 });
 
 // Ruta para añadir una consulta
-app.post('/addConsulta', (req, res) => {
-    const { Nombre, Apellido, TarjetaSanitaria, FechaCita, MotivoConsulta } = req.body;
-    const sql = 'INSERT INTO Consultas (PacienteId, MedicoId) VALUES ((SELECT id FROM Pacientes WHERE NombrePaciente = ? AND ApellidoPaciente = ? AND TarjetaSanitaria = ?), (SELECT id FROM Medicos WHERE NombreMedico = ?))';
-    db.query(sql, [Nombre, Apellido, TarjetaSanitaria, Nombre], (err, result) => {
-        if (err) throw err;
+app.post('/addConsulta', async (req, res) => {
+    try {
+        const { Nombre, Apellido, TarjetaSanitaria, FechaCita, MotivoConsulta, MedicoId } = req.body;
+
+        // Obtener el id del paciente
+        const pacienteIdResult = await db.query('SELECT id FROM Pacientes WHERE NombrePaciente = ? AND ApellidoPaciente = ? AND TarjetaSanitaria = ?', [Nombre, Apellido, TarjetaSanitaria]);
+        const pacienteId = pacienteIdResult[0].id;
+
+        // Insertar la consulta utilizando los ids obtenidos
+        const sql = 'INSERT INTO Consultas (PacienteId, MedicoId) VALUES (?, ?)';
+        await db.query(sql, [pacienteId, MedicoId]);
+
         res.send('Consulta añadida exitosamente');
-    });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error al agregar la consulta');
+    }
 });
+
 
 // Ruta para editar una consulta
 app.put('/editConsulta', (req, res) => {
-    const { Nombre, Apellido, FechaCita } = req.body;
-    const sql = 'UPDATE Pacientes SET FechaCita = ? WHERE NombrePaciente = ? AND ApellidoPaciente = ?';
-    db.query(sql, [FechaCita, Nombre, Apellido], (err, result) => {
+    const { Nombre, Apellido, FechaCita, MotivoConsulta } = req.body;
+    const sql = 'UPDATE Pacientes SET FechaCita = ?, MotivoConsulta = ? WHERE PacienteId IN (SELECT id FROM Pacientes WHERE NombrePaciente = ? AND ApellidoPaciente = ?)';
+    db.query(sql, [FechaCita, MotivoConsulta, Nombre, Apellido], (err, result) => {
         if (err) throw err;
         res.send('Consulta editada exitosamente');
     });
 });
+
 
 // Ruta para eliminar una consulta
 app.delete('/deleteConsulta', (req, res) => {
