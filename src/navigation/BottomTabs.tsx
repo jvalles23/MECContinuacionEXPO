@@ -66,7 +66,7 @@ const TabsIOS = () => {
     <BottomTabIOS.Navigator
       sceneContainerStyle={{ backgroundColor: 'white' }}
       screenOptions={({ route }) => getScreenOptions(route)}>
-      <BottomTabIOS.Screen name="Pacient" component={PacientScreen} />
+      <BottomTabIOS.Screen name="Home" component={PacientScreen} />
       <BottomTabIOS.Screen
         name="Profile"
         options={{ title: 'Perfil' }}
