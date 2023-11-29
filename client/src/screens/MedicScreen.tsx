@@ -69,7 +69,7 @@ const stylesInput = StyleSheet.create({
     borderBottomColor: colors.primary,
     marginBottom: 10,
     paddingBottom: 4,
-    placeholderTextColor: colors.primary,
+    color: colors.primary,
   },
   image: {
     width: '100%',

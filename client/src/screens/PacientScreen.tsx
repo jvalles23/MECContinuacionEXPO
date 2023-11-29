@@ -49,7 +49,7 @@ const PacientScreen = ({ navigation }: Props) => {
                     <TouchableOpacity
                         onPress={() => navigation.navigate('RegisterPacient')}
                     >
-                        <Text style={{ color: '#76D7C4' }}>Registrate!!!</Text>
+                        <Text style={{ color: '#76D7C4' }}>Regístrate!!!</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -69,7 +69,6 @@ const stylesInput = StyleSheet.create({
         borderBottomColor: colors.primary,
         marginBottom: 10,
         paddingBottom: 4,
-        placeholderTextColor: colors.primary,
     },
     image: {
         width: '100%',

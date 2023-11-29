@@ -8,7 +8,7 @@ import { styles } from '../theme/appTheme';
 interface Props extends DrawerScreenProps<any, any> { }
 
 const PacientHome = ({ navigation }: Props) => {
-  const data = [
+  const [consultas, setConsultas] = useState([
     {
       medico: 'Javier',
       centroSalud: 'Centro Delicias',
@@ -59,7 +59,8 @@ const PacientHome = ({ navigation }: Props) => {
       tarjetaSanitaria: 'AR4567898765467',
       motivoConsulta: 'Vacunación'
     },
-  ];
+  ]);
+
 
   const [refreshing, setRefreshing] = useState(false);
   const onRefresh = useCallback(() => {
@@ -72,8 +73,17 @@ const PacientHome = ({ navigation }: Props) => {
   }, []);
   const refreshColors = ['#76D7C4'];
 
+  const agregarConsulta = (nuevaConsulta) => {
+    setConsultas([...consultas, nuevaConsulta]);
+  };
 
-  const renderItem = ({ item }) => (
+  const eliminarConsulta = (index) => {
+    const nuevasConsultas = [...consultas];
+    nuevasConsultas.splice(index, 1);
+    setConsultas(nuevasConsultas);
+  };
+
+  const renderItem = ({ item, index }) => (
     <TouchableOpacity
       style={{
         backgroundColor: 'white',
@@ -99,7 +109,9 @@ const PacientHome = ({ navigation }: Props) => {
             fechaNacimiento: item.fechaNacimiento,
             tarjetaSanitaria: item.tarjetaSanitaria,
             fechaCita: item.fechaCita,
-            motivoConsulta: item.motivoConsulta
+            motivoConsulta: item.motivoConsulta,
+            index: index,
+            eliminarConsulta: eliminarConsulta
           });
         }}
         customStyle={{
@@ -113,42 +125,39 @@ const PacientHome = ({ navigation }: Props) => {
 
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={refreshColors}
-        />
-      }
-    >
-      <View style={styles.globalMargin}>
-        <Text style={styles.title}>Tus Consultas</Text>
-        <Button
-          label='Añadir Consulta'
-          kind='primary'
-          size='md'
-          onPress={() => navigation.navigate('AddConsulta')}
-          customStyle={{
-            padding: 10,
-            margin: 5,
-            fontWeight: 'normal',
-            fontSize: 12,
-            marginLeft: -1,
-            marginTop: 5
-          }}
-          icon='add-circle-outline'
-        />
-        <FlatList
-          data={data}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={renderItem}
-        />
-        <View style={{ height: 50 }} />
-      </View>
-    </ScrollView>
+    <View style={styles.globalMargin}>
+      <Text style={styles.title}>Tus Consultas</Text>
+      <Button
+        label='Añadir Consulta'
+        kind='primary'
+        size='md'
+        onPress={() => navigation.navigate('AddConsulta', { agregarConsulta })}
+        customStyle={{
+          padding: 10,
+          margin: 5,
+          fontWeight: 'normal',
+          fontSize: 12,
+          marginLeft: -1,
+          marginTop: 5,
+        }}
+        icon='add-circle-outline'
+      />
+      <FlatList
+        data={consultas}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={renderItem}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={refreshColors}
+          />
+        }
+      />
+      <View style={{ height: 50 }} />
+    </View>
   );
 };
 

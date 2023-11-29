@@ -13,6 +13,7 @@ import SelectionScreen from '../screens/SelectionScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import { BottomTabs } from './BottomTabs';
 import { BottomTabsMed } from './BottomTabsMed';
+import PDFViewerPacient from '../screens/PDFViewerPacient';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,7 @@ export const Navigator = () => {
       <Stack.Screen name="AddConsulta" component={AddConsulta} />
       <Stack.Screen name="EditConsulta" component={EditConsulta} />
       <Stack.Screen name="PDFViewer" component={PDFViewer} />
+      <Stack.Screen name="PDFViewerPacient" component={PDFViewerPacient} />
     </Stack.Navigator>
   );
 };

@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
 import Button from '../components/Button';
+import { colors } from '../theme/appTheme';
+import { useNavigation } from '@react-navigation/native';
 
 const PDFViewer = ({ route }) => {
     const [pacienteInfo, setPacienteInfo] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const navigation = useNavigation();
 
     useEffect(() => {
-        // Inicializar el estado con la información del paciente
         setPacienteInfo(route.params.paciente);
     }, [route.params.paciente]);
+
+    const handleGuardarJustificante = () => {
+        setModalVisible(true);
+    };
+
+    const closeModal = () => {
+        // Cerrar el modal
+        setModalVisible(false);
+    };
 
     if (!pacienteInfo) {
         return (
@@ -20,10 +32,12 @@ const PDFViewer = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            {/* Resto del código usando pacienteInfo en lugar de route.params.paciente */}
-            <View style={{ flexDirection: 'row', marginTop: 30, marginLeft: -55, alignItems: 'center' }}>
-                <Image source={require('../assets/images/MEC.png')} style={{ width: 200, height: 120 }} />
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('MedicHome')}>
+                <View style={{ flexDirection: 'row', marginTop: 30, marginLeft: -55, alignItems: 'center' }}>
+                    <Image source={require('../assets/images/MEC.png')} style={{ width: 200, height: 120 }} />
+                </View>
+            </TouchableOpacity>
+
             <View style={{ marginLeft: 110, marginTop: 20 }}>
                 <Text style={styles.title}>Lugar y Fecha: Aragón, {`${pacienteInfo.fechaCita}`}</Text>
             </View>
@@ -68,13 +82,28 @@ const PDFViewer = ({ route }) => {
                 label='Guardar justificante'
                 kind='primary_outline'
                 size='lg'
-                onPress={() => console.log('Guardado')}
+                onPress={handleGuardarJustificante}
                 customStyle={{
                     marginLeft: 10,
                     height: 40,
                     marginTop: 20
                 }}
             />
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={closeModal}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>¡Guardado correctamente!</Text>
+                        <TouchableOpacity onPress={closeModal}>
+                            <Text style={styles.modalButton}>Cerrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -106,6 +135,29 @@ const styles = StyleSheet.create({
     noDataText: {
         fontSize: 16,
         textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: 20,
+        alignItems: 'center',
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: colors.primary
+    },
+    modalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 20,
+    },
+    modalButton: {
+        fontSize: 16,
+        color: 'red',
     },
 });
 

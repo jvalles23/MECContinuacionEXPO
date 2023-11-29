@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, Platform } from 'react-native';
 import Button from '../components/Button';
 import { colors, styles } from '../theme/appTheme';
 
@@ -39,6 +39,7 @@ const EditConsulta = ({ route, navigation }) => {
   const handleDateChange = (event, date) => {
     if (date !== undefined) {
       setSelectedDate(date);
+      setEditedFechaCita(date);
     }
     setShowDatePicker(false);
   };
@@ -46,34 +47,35 @@ const EditConsulta = ({ route, navigation }) => {
   const showDatepicker = () => {
     setShowDatePicker(true);
   };
-
-  // Función para formatear la fecha
   const formatDate = (date) => format(date, 'dd-MM-yyyy');
 
   return (
-    <View style={styles.globalMargin}>
+    <KeyboardAvoidingView
+      style={styles.globalMargin}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
       <View style={stylesInput.container}>
         <Image
           source={require('../assets/images/MEC.png')}
           style={stylesInput.image}
         />
         <TextInput
-          style={stylesInput.input}
+          style={{ ...stylesInput.input, color: '#75787B' }}
           placeholder="Nombre"
           value={editedNombre}
-          editable={false} // No editable
+          editable={false}
         />
         <TextInput
-          style={stylesInput.input}
+          style={{ ...stylesInput.input, color: '#75787B' }}
           placeholder="Apellido"
           value={editedApellido}
-          editable={false} // No editable
+          editable={false}
         />
         <TextInput
-          style={stylesInput.input}
+          style={{ ...stylesInput.input, color: '#75787B' }}
           placeholder="Tarjeta Sanitaria"
           value={editedTarjetaSanitaria}
-          editable={false} // No editable
+          editable={false}
         />
         <TouchableOpacity onPress={showDatepicker}>
           <Text style={stylesInput.dateText}>
@@ -106,7 +108,7 @@ const EditConsulta = ({ route, navigation }) => {
           }}
         />
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -122,7 +124,6 @@ const stylesInput = StyleSheet.create({
     borderBottomColor: colors.primary,
     marginBottom: 10,
     paddingBottom: 4,
-    placeholderTextColor: colors.primary,
   },
   image: {
     width: '100%',

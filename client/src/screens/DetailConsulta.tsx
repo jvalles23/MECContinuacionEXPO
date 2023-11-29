@@ -14,7 +14,6 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../components/Button';
 import { styles } from '../theme/appTheme';
-import { mapStyle } from '../theme/mapStyle';
 import { MARKERS_DATA } from '../components/MarkersData';
 import { Image } from 'react-native';
 
@@ -22,6 +21,8 @@ interface Props extends DrawerScreenProps<any, any> { }
 
 const DetailConsulta = ({ navigation, route }: Props) => {
   const [selectedMarker, setSelectedMarker] = useState(null);
+  const [fechaConsulta, setFechaConsulta] = useState(route.params.fechaCita);
+  const { index, eliminarConsulta } = route.params;
 
   const handleMarkerPress = (marker) => {
     console.log('Marker pressed:', marker);
@@ -32,14 +33,20 @@ const DetailConsulta = ({ navigation, route }: Props) => {
     setSelectedMarker(null);
   };
 
-  const { nombre, apellido, tarjetaSanitaria, fechaCita, motivoConsulta } = route.params;
+  const handleEliminarConsulta = () => {
+    if (eliminarConsulta) {
+      eliminarConsulta(index);
+    }
+    navigation.navigate('PacientHome');
+  };
+
+  const { nombre, apellido, tarjetaSanitaria, motivoConsulta } = route.params;
   const { paciente } = route.params;
 
   const [showAlert, setShowAlert] = useState(false);
 
-  // Función para mostrar una alerta aleatoria personalizada
   const showRandomAlert = () => {
-    const shouldShowAlert = Math.random() < 0.5; // Probabilidad del 50%
+    const shouldShowAlert = Math.random() < 0.5;
     setShowAlert(shouldShowAlert);
   };
 
@@ -76,7 +83,7 @@ const DetailConsulta = ({ navigation, route }: Props) => {
           <Text>Nombre: {nombre}</Text>
           <Text>Apellido: {apellido}</Text>
           <Text>Tarjeta Sanitaria: {tarjetaSanitaria}</Text>
-          <Text>Fecha Cita: {fechaCita}</Text>
+          <Text>Fecha Cita: {fechaConsulta}</Text>
           <Text>Motivo Consulta: {motivoConsulta}</Text>
           <View style={{ flexDirection: 'row' }}>
             <View style={stylesIntern.buttonContainer}>
@@ -88,7 +95,7 @@ const DetailConsulta = ({ navigation, route }: Props) => {
                   nombre,
                   apellido,
                   tarjetaSanitaria,
-                  fechaCita,
+                  fechaCita: fechaConsulta,
                   motivoConsulta
                 })}
                 customStyle={{
@@ -102,7 +109,7 @@ const DetailConsulta = ({ navigation, route }: Props) => {
                 label='Eliminar'
                 kind='primary'
                 size='md'
-                onPress={() => navigation.navigate('PacientHome')}
+                onPress={handleEliminarConsulta}
                 customStyle={{
                   backgroundColor: 'red',
                   padding: 10,
@@ -116,7 +123,14 @@ const DetailConsulta = ({ navigation, route }: Props) => {
             </View>
             <TouchableOpacity
               style={{ marginLeft: 10, marginTop: -100 }}
-              onPress={() => navigation.navigate('PDFViewer', { paciente })}
+              onPress={() => navigation.navigate('PDFViewerPacient', {
+                nombre,
+                apellido,
+                tarjetaSanitaria,
+                fechaConsulta,
+                motivoConsulta,
+                paciente,
+              })}
             >
               <Icon name='document-outline' size={30} color='#76D7C4' />
               <Text style={{ color: '#76D7C4' }}>PDF</Text>
@@ -165,8 +179,6 @@ const DetailConsulta = ({ navigation, route }: Props) => {
               ></Marker>
             ))}
           </MapView>
-
-          {/* Modal para mostrar información del marcador */}
           <Modal
             visible={selectedMarker !== null}
             animationType="slide"
