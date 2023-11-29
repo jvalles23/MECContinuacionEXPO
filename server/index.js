@@ -23,7 +23,7 @@ db.connect(err => {
 
 app.use(bodyParser.json());
 
-// Ruta para registrar un médico
+// Registrar un médico
 app.post('/registMed', (req, res) => {
     const { Nombre, Apellido, NumColegiado, Contraseña } = req.body;
     const sql = 'INSERT INTO Medicos (NombreMedico, ApellidoMedico, NumeroColegiado, Contraseña) VALUES (?, ?, ?, ?)';
@@ -33,7 +33,7 @@ app.post('/registMed', (req, res) => {
     });
 });
 
-// Ruta para registrar un paciente
+// Registrar un paciente
 app.post('/registPac', (req, res) => {
     const { Nombre, Apellido, FechaNacimiento, TarjetaSanitaria, Contraseña } = req.body;
     const sql = 'INSERT INTO Pacientes (NombrePaciente, ApellidoPaciente, FechaNacimiento, TarjetaSanitaria, Contraseña) VALUES (?, ?, ?, ?, ?)';
@@ -43,7 +43,7 @@ app.post('/registPac', (req, res) => {
     });
 });
 
-// Ruta para obtener la tabla de consultas con datos específicos
+// Obtener la tabla de consultas con datos específicos
 app.get('/consulta', (req, res) => {
     const sql = 'SELECT Medicos.NombreMedico, Pacientes.CentroSalud, Pacientes.FechaCita FROM Consultas INNER JOIN Medicos ON Consultas.MedicoId = Medicos.id INNER JOIN Pacientes ON Consultas.PacienteId = Pacientes.id';
     db.query(sql, (err, result) => {
@@ -52,7 +52,7 @@ app.get('/consulta', (req, res) => {
     });
 });
 
-// Ruta para obtener información específica de un paciente
+// Obtener información específica de un paciente
 app.get('/infoConsulta', (req, res) => {
     const sql = 'SELECT Pacientes.NombrePaciente, Pacientes.ApellidoPaciente, Pacientes.TarjetaSanitaria, Pacientes.FechaCita, Pacientes.MotivoConsulta FROM Pacientes';
     db.query(sql, (err, result) => {
@@ -61,7 +61,7 @@ app.get('/infoConsulta', (req, res) => {
     });
 });
 
-// Ruta para añadir una consulta
+// Añadir una consulta
 app.post('/addConsulta', async (req, res) => {
     try {
         const { Nombre, Apellido, TarjetaSanitaria, FechaCita, MotivoConsulta, MedicoId } = req.body;
@@ -82,7 +82,7 @@ app.post('/addConsulta', async (req, res) => {
 });
 
 
-// Ruta para editar una consulta
+// Editar una consulta
 app.put('/editConsulta', (req, res) => {
     const { Nombre, Apellido, FechaCita, MotivoConsulta } = req.body;
     const sql = 'UPDATE Pacientes SET FechaCita = ?, MotivoConsulta = ? WHERE PacienteId IN (SELECT id FROM Pacientes WHERE NombrePaciente = ? AND ApellidoPaciente = ?)';
@@ -90,12 +90,6 @@ app.put('/editConsulta', (req, res) => {
         if (err) throw err;
         res.send('Consulta editada exitosamente');
     });
-});
-
-
-// Ruta para eliminar una consulta
-app.delete('/deleteConsulta', (req, res) => {
-    // Aquí debes proporcionar lógica para eliminar una consulta según tus necesidades
 });
 
 app.listen(port, () => {
