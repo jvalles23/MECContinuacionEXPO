@@ -130,7 +130,7 @@ const PacientHome = ({ navigation }: Props) => {
       <Button
         label='Añadir Consulta'
         kind='primary'
-        size='md'
+        size='large'
         onPress={() => navigation.navigate('AddConsulta', { agregarConsulta })}
         customStyle={{
           padding: 10,

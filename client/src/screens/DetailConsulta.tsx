@@ -122,7 +122,7 @@ const DetailConsulta = ({ navigation, route }: Props) => {
               />
             </View>
             <TouchableOpacity
-              style={{ marginLeft: 10, marginTop: -100 }}
+              style={{ marginLeft: 10, marginTop: -90 }}
               onPress={() => navigation.navigate('PDFViewerPacient', {
                 nombre,
                 apellido,

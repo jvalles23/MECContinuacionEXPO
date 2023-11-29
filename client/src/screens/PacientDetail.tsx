@@ -24,7 +24,7 @@ const PacientDetail = ({ route, navigation }: Props) => {
   };
 
   return (
-    <View style={{ ...styles.globalMargin, paddingTop: 150 }}>
+    <View style={{ ...styles.globalMargin, paddingTop: 100 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name='chevron-back-outline' size={40} color='#76D7C4' />

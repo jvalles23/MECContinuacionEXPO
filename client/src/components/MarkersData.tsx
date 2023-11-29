@@ -3,8 +3,8 @@ import { colors } from "../theme/appTheme";
 export const MARKERS_DATA = [
   {
     id: '1',
-    latitude: 41.64609,
-    longitude: -0.90402,
+    latitude: 41.64540,
+    longitude: -0.90403,
     color: colors.primary,
     name: 'Centro de Salud Delicias Sur',
     direction: 'Calle de Manuel Dronda, 1',
